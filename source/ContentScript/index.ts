@@ -32,6 +32,15 @@ window.addEventListener('message', ({ data }: MessageEvent<Message>) => {
   }
 });
 
+browser.runtime.onMessage.addListener(
+  (message: { type: string; origin: string }) => {
+    console.log('catch and forward', message);
+    if (message.origin === 'extension') {
+      window.postMessage(message);
+    }
+  }
+);
+
 // create panel
 browser.devtools.panels.create(
   'GOC manager',

@@ -32,12 +32,43 @@ const getData = () => {
   };
 };
 
-// TODO: listen for message
-setTimeout(() => {
-  if (window.__GOC_MANAGER__) {
-    window.postMessage({
-      type: 'goc-manager-agent',
-      ...getData(),
-    });
+window.addEventListener('message', ({ data }: MessageEvent) => {
+  if (data.origin !== 'extension') {
+    return;
   }
-}, 5000);
+
+  console.log({ data });
+
+  switch (data.type) {
+    case 'init': {
+      if (window.__GOC_MANAGER__) {
+        window.postMessage({
+          type: 'goc-manager-agent',
+          ...getData(),
+        });
+      }
+      break;
+    }
+    case 'set-overrides': {
+      const { overrides } = getData();
+      const { overridesToRemove, overridesToUpdate } = data.data;
+      const updatedOverrides = {
+        ...overrides,
+        ...overridesToUpdate,
+      };
+
+      // remove empty overrides
+      Object.keys(overridesToRemove).forEach((key) => {
+        delete updatedOverrides[key];
+      });
+
+      localStorage.setItem(
+        OVERRIDE_LOCAL_STORAGE_KEY,
+        JSON.stringify(updatedOverrides)
+      );
+
+      window.location.reload();
+      break;
+    }
+  }
+});
