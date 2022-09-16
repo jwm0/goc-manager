@@ -4,7 +4,7 @@ const FilemanagerPlugin = require('filemanager-webpack-plugin');
 const TerserPlugin = require('terser-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
-const {CleanWebpackPlugin} = require('clean-webpack-plugin');
+const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const ExtensionReloader = require('webpack-extension-reloader');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const WextManifestWebpackPlugin = require('wext-manifest-webpack-plugin');
@@ -63,6 +63,7 @@ module.exports = {
     contentScript: path.join(sourcePath, 'ContentScript', 'index.ts'),
     popup: path.join(sourcePath, 'Popup', 'index.tsx'),
     options: path.join(sourcePath, 'Options', 'index.tsx'),
+    inject: path.join(sourcePath, 'ContentScript', 'inject.ts'),
   },
 
   output: {
@@ -81,6 +82,11 @@ module.exports = {
 
   module: {
     rules: [
+      {
+        test: /\.mjs$/,
+        include: /node_modules/,
+        type: 'javascript/auto',
+      },
       {
         type: 'javascript/auto', // prevent webpack handling json with its own loaders,
         test: /manifest\.json$/,
@@ -135,7 +141,7 @@ module.exports = {
     // Plugin to not generate js bundle for manifest entry
     new WextManifestWebpackPlugin(),
     // Generate sourcemaps
-    new webpack.SourceMapDevToolPlugin({filename: false}),
+    new webpack.SourceMapDevToolPlugin({ filename: false }),
     new ForkTsCheckerWebpackPlugin(),
     // environmental variables
     new webpack.EnvironmentPlugin(['NODE_ENV', 'TARGET_BROWSER']),
@@ -166,10 +172,10 @@ module.exports = {
       filename: 'options.html',
     }),
     // write css file(s) to build folder
-    new MiniCssExtractPlugin({filename: 'css/[name].css'}),
+    new MiniCssExtractPlugin({ filename: 'css/[name].css' }),
     // copy static assets
     new CopyWebpackPlugin({
-      patterns: [{from: 'source/assets', to: 'assets'}],
+      patterns: [{ from: 'source/assets', to: 'assets' }],
     }),
     // plugin to enable browser reloading in development mode
     extensionReloaderPlugin,
@@ -189,7 +195,7 @@ module.exports = {
       }),
       new OptimizeCSSAssetsPlugin({
         cssProcessorPluginOptions: {
-          preset: ['default', {discardComments: {removeAll: true}}],
+          preset: ['default', { discardComments: { removeAll: true } }],
         },
       }),
       new FilemanagerPlugin({
@@ -199,8 +205,11 @@ module.exports = {
               {
                 format: 'zip',
                 source: path.join(destPath, targetBrowser),
-                destination: `${path.join(destPath, targetBrowser)}.${getExtensionFileType(targetBrowser)}`,
-                options: {zlib: {level: 6}},
+                destination: `${path.join(
+                  destPath,
+                  targetBrowser
+                )}.${getExtensionFileType(targetBrowser)}`,
+                options: { zlib: { level: 6 } },
               },
             ],
           },
