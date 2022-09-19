@@ -120,7 +120,7 @@ function FlagRow({
       <Td>
         <ButtonGroup variant="outline" spacing="6">
           <Button size="xs" colorScheme="teal" onClick={handleEdit}>
-            Edit
+            {editing ? 'Apply' : 'Edit'}
           </Button>
           {overridden && (
             <Button
@@ -247,7 +247,7 @@ function Root() {
     <ChakraProvider>
       <section id="popup">
         <Heading size="lg" colorScheme="teal" marginBottom={5}>
-          Config manager
+          GOC manager
         </Heading>
         <Input
           placeholder="Search"
