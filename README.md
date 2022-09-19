@@ -1,5 +1,5 @@
 <h1 align="center">GOC manager</h1>
-<p align="center">Web Extension for managing GOC flags</p>
+<p align="center">Web Extension for managing GOC flags. Hackathon project 2022Q3 </p>
 <h3 align="center">Bootstrapped with <a href="https://github.com/abhijithvijayan/web-extension-starter">abhijithvijayan/web-extension-starter</a></h3>
 <hr />
 
@@ -13,6 +13,7 @@
 
 Ensure you have
 
+- Webapp instance with changes from: https://github.com/databricks/universe/pull/209815
 - [Node.js](https://nodejs.org) 10 or later installed
 - [Yarn](https://yarnpkg.com) v1 or v2 installed
 
