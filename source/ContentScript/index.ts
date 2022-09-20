@@ -1,8 +1,6 @@
 import { browser } from 'webextension-polyfill-ts';
 import { Config, Flag, Message } from '../types';
 
-console.log('helloworld from content script');
-
 const script = document.createElement('script');
 script.src = browser.runtime.getURL('js/inject.bundle.js');
 (document.head || document.documentElement).appendChild(script);
@@ -20,6 +18,15 @@ const getMappedData = ({
     overriddenValue: overrides[name],
   }));
 
+browser.runtime.onMessage.addListener(
+  (message: { type: string; origin: string }) => {
+    if (message.origin === 'extension') {
+      // @ts-ignore
+      window.postMessage(message);
+    }
+  }
+);
+
 // listen
 window.addEventListener('message', ({ data }: MessageEvent<Message>) => {
   if (data.type === 'goc-manager-agent') {
@@ -32,20 +39,11 @@ window.addEventListener('message', ({ data }: MessageEvent<Message>) => {
   }
 });
 
-browser.runtime.onMessage.addListener(
-  (message: { type: string; origin: string }) => {
-    console.log('catch and forward', message);
-    if (message.origin === 'extension') {
-      window.postMessage(message);
-    }
-  }
-);
-
 // create panel
-browser.devtools.panels.create(
-  'GOC manager',
-  'assets/icons/favicon-32.png',
-  'popup.html'
-);
+// browser.devtools.panels.create(
+//   'GOC manager',
+//   'assets/icons/favicon-32.png',
+//   'popup.html'
+// );
 
 export {};

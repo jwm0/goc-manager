@@ -1,16 +1,11 @@
 import { Config } from '../types';
 
-console.log('[Flags manager] script injected');
-
-interface Window {
-  __GOC_MANAGER__: {
-    getState(): Config;
-  };
-}
+console.log('[GOC manager] script injected');
 
 const OVERRIDE_LOCAL_STORAGE_KEY = 'com.databricks.overrideWebappConf';
 
 const getData = () => {
+  // @ts-ignore
   const data = window.__GOC_MANAGER__.getState();
   const overrides = window.localStorage.getItem(OVERRIDE_LOCAL_STORAGE_KEY);
 
@@ -41,7 +36,9 @@ window.addEventListener('message', ({ data }: MessageEvent) => {
 
   switch (data.type) {
     case 'init': {
+      // @ts-ignore
       if (window.__GOC_MANAGER__) {
+        // @ts-ignore
         window.postMessage({
           type: 'goc-manager-agent',
           ...getData(),
@@ -70,5 +67,7 @@ window.addEventListener('message', ({ data }: MessageEvent) => {
       window.location.reload();
       break;
     }
+    default:
+      break;
   }
 });

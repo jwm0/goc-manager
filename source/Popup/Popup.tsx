@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { browser, Tabs } from 'webextension-polyfill-ts';
+import { browser } from 'webextension-polyfill-ts';
 import {
   ChakraProvider,
   TableContainer,
@@ -21,9 +21,9 @@ import { sendToContentScript } from '../messages';
 import './styles.scss';
 import { Config, Flag, Value } from '../types';
 
-function openWebPage(url: string): Promise<Tabs.Tab> {
-  return browser.tabs.create({ url });
-}
+// function openWebPage(url: string): Promise<Tabs.Tab> {
+//   return browser.tabs.create({ url });
+// }
 
 const getDisplayValue = (value: Value): string => {
   if (typeof value === 'undefined') {
@@ -172,7 +172,8 @@ function FeatureList({
                 overriddenValue={overriddenValue}
                 setOverride={setOverride}
                 unsavedValue={
-                  Object.hasOwn(localOverrides || {}, flag.name)
+                  // eslint-disable-next-line no-prototype-builtins
+                  (localOverrides || {}).hasOwnProperty(flag.name)
                     ? unsavedValue
                     : undefined
                 }
